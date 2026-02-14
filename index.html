@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Galaxia</title>
+    <script src="https://www.goat1000.com/tagcanvas.min.js" type="text/javascript"></script>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #000; overflow: hidden;
+            font-family: 'Arial', sans-serif; color: white;
+        }
+
+        /* Título superior con resplandor amarillo */
+        #top-text {
+            position: absolute; top: 25px; width: 100%; text-align: center;
+            z-index: 100; font-size: 1.4rem; font-weight: bold;
+            text-shadow: 0 0 10px #ffea00, 0 0 20px #ffea00;
+        }
+
+        /* Núcleo de la Galaxia (Negro con aura morada profunda) */
+        #galaxy-core {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px; height: 250px;
+            display: flex; justify-content: center; align-items: center;
+            pointer-events: none; z-index: 1;
+        }
+
+        .aura-purple {
+            position: absolute; width: 150%; height: 150%;
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.5) 0%, transparent 70%);
+            filter: blur(40px); border-radius: 50%;
+        }
+
+        .black-center {
+            position: absolute; width: 180px; height: 180px;
+            background: #000; border-radius: 50%;
+            box-shadow: 0 0 45px #8a2be2, inset 0 0 60px #000;
+            border: 1px solid rgba(138, 43, 226, 0.4);
+        }
+
+        /* Muchas estrellas blancas */
+        .star {
+            position: absolute; background: white; border-radius: 50%;
+            opacity: 0.8; z-index: 0; box-shadow: 0 0 5px #fff;
+        }
+
+        #canvasContainer {
+            position: absolute; width: 100%; height: 100%;
+            z-index: 10; display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Reproductor de música estilo cristal morado */
+        #player-panel {
+            position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 420px; padding: 15px;
+            background: rgba(20, 5, 40, 0.8); backdrop-filter: blur(12px);
+            border-radius: 20px; border: 1px solid #8a2be2;
+            z-index: 100; text-align: center;
+        }
+
+        .audio-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        .btn-pick {
+            background: #8a2be2; color: white; border: none; padding: 8px 12px;
+            border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold;
+        }
+        audio { width: 100%; filter: hue-rotate(250deg) brightness(1.5); }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="top-text">Te Amo Muchote Mis Ojitos Brillantes 💛</div>
+
+    <div id="galaxy-core">
+        <div class="aura-purple"></div>
+        <div class="black-center"></div>
+    </div>
+
+    <div id="canvasContainer">
+        <canvas id="myCanvas" width="1000" height="1000"></canvas>
+    </div>
+
+    <div id="player-panel">
+        <div style="font-size: 0.85rem; color: #d8b4fe; margin-bottom: 5px;">Elige tu canción favorita 🎵</div>
+        <div class="audio-row">
+            <button class="btn-pick" onclick="document.getElementById('m-file').click()">Elegir canción</button>
+            <audio id="player" controls></audio>
+            <input type="file" id="m-file" accept="audio/*" style="display:none">
+        </div>
+    </div>
+
+    <div id="tags" style="display: none;">
+        <ul>
+            <li><a href="#">Mi Amor</a></li><li><a href="#">Ojitos Brillantes</a></li>
+            <li><a href="#">Mi Todo</a></li><li><a href="#">Te Amo</a></li>
+            <li><a href="#">Mi Paz</a></li><li><a href="#">Hermosa</a></li>
+            <li><a href="#">Mi Tesoro</a></li><li><a href="#">Mi Cielo</a></li>
+            <li><a href="#">Princesa</a></li><li><a href="#">Mi Vida</a></li>
+            <li><a href="#">Siempre Juntos</a></li><li><a href="#">Mi Mundo</a></li>
+            <li><a href="#">Mi Bebé</a></li><li><a href="#">Mi Infinito</a></li>
+            <li><a href="#">Mi Niña</a></li><li><a href="#">Mi Reina</a></li>
+        </ul>
+    </div>
+
+    <script>
+        // Función para llenar el cielo de estrellas
+        function addStars() {
+            for (let i = 0; i < 450; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2 + 0.5;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.left = Math.random() * 100 + 'vw';
+                if(Math.random() > 0.7) star.style.animation = "blink " + (Math.random() * 2 + 1) + "s infinite";
+                document.body.appendChild(star);
+            }
+        }
+
+        // Función para cargar la música
+        document.getElementById('m-file').onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                const player = document.getElementById('player');
+                player.src = url;
+                player.play();
+            }
+        };
+
+        window.onload = function() {
+            addStars();
+            try {
+                // Configuración para que gire como un anillo (disco)
+                TagCanvas.Start('myCanvas', 'tags', {
+                    textColour: '#ffffff',
+                    textHeight: 20,
+                    outlineColour: 'transparent',
+                    reverse: true,
+                    depth: 0.95,
+                    maxSpeed: 0.05,
+                    initial: [0.1, 0], // Movimiento horizontal automático
+                    wheelZoom: false,
+                    noSelect: true,
+                    weight: true,
+                    stretchX: 2.5, // Estira las letras para formar el anillo
+                    dragControl: true
+                });
+            } catch(e) {
+                console.error("Error al iniciar la galaxia");
+            }
+        };
+    </script>
+</body>
+</html>
